@@ -169,7 +169,7 @@ export default function Hero() {
           <div className="hero-video-stage">
             <video
               ref={videoRef}
-              src="/video/hero.mp4"
+              src="/video/hero_2.mp4"
               className="hero-bg-video"
               playsInline
               muted
