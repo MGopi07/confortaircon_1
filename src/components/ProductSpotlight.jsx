@@ -276,13 +276,14 @@ export default function ProductSpotlight({ openSpec, openAppointment }) {
     }
   }, [products]);
 
-  // Deep linking: update URL hash when active product changes without jumping scroll
+  // Deep linking: update URL hash ONLY when user changes product, not on initial mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
+    if (!window.location.hash && activeIndex === 0) return;
     if (window.location.hash.replace('#', '') !== activeProduct.id) {
       window.history.replaceState(null, '', `#${activeProduct.id}`);
     }
-  }, [activeProduct.id]);
+  }, [activeProduct.id, activeIndex]);
 
   // Section entrance animation via IntersectionObserver
   useEffect(() => {
@@ -321,8 +322,9 @@ export default function ProductSpotlight({ openSpec, openAppointment }) {
       const left = activeTab.offsetLeft;
       const width = activeTab.offsetWidth;
       setIndicatorStyle({ top: 'auto', height: 3, left, width });
-      // Scroll tab into view horizontally on tablet/mobile
-      activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      // Scroll tab container horizontally ONLY - NEVER scroll window via scrollIntoView
+      const scrollPos = left - tabList.clientWidth / 2 + width / 2;
+      tabList.scrollTo({ left: Math.max(0, scrollPos), behavior: 'smooth' });
     }
   }, [activeIndex]);
 

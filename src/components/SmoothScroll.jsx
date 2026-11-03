@@ -24,16 +24,36 @@ export default function SmoothScroll() {
   const { appointmentState, specState } = useModal();
   const isModalOpen = appointmentState.isOpen || specState.isOpen;
 
+  // Prevent mobile browsers from restoring previous scroll position down the page,
+  // and clear any stale hash from old mobile sessions
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+      if (window.location.hash) {
+        window.history.replaceState(null, '', window.location.pathname);
+      }
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+  }, []);
+
   useEffect(() => {
     const lenis = new Lenis({
       autoRaf: false,
       lerp: 0.09,
       wheelMultiplier: 1,
-      anchors: true,
+      anchors: false,
       stopInertiaOnNavigate: true,
       prevent: (node) => node.classList?.contains('modal'),
     });
     lenisRef.current = lenis;
+
+    // Ensure initial viewport is firmly pinned to top (0, 0) on load
+    if (typeof window !== 'undefined') {
+      lenis.scrollTo(0, { immediate: true });
+      window.scrollTo(0, 0);
+    }
 
     // Connect Lenis to GSAP ScrollTrigger
     lenis.on('scroll', ScrollTrigger.update);

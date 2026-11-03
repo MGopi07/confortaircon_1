@@ -25,8 +25,8 @@ const HERO_STAGES = [
     ],
     secondaryCta: {
       text: "Explore Our Services",
-      href: "#services",
-      icon: "fa-solid fa-arrow-down-long",
+      href: "/services",
+      icon: "fa-solid fa-arrow-right-long",
     },
   },
   {
@@ -132,12 +132,12 @@ export default function Hero() {
         });
       });
 
-      // Mobile / Tablet: scrub as the video card scrolls through the viewport
+      // Mobile / Tablet: scrub as the hero track scrolls through the viewport
       mm.add("(max-width: 991.98px)", () => {
         ScrollTrigger.create({
-          trigger: container,
-          start: "top 85%",
-          end: "bottom 15%",
+          trigger: track,
+          start: "top top",
+          end: "bottom bottom",
           scrub: 0.8,
           onUpdate: (self) => {
             const p = self.progress;
